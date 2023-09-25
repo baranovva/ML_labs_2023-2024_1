@@ -12,24 +12,28 @@ class CategoricalNBLearn:
         self.random_state = 100
         self.train_size = arange(0.01, 1., 0.001)
 
-    def encoder(self, data, flag):  # create labels for categorical data
-        if flag:
+    # create labels for categorical data
+    def encoder(self, data, tic_tac_toe):
+        if tic_tac_toe:
             coder = OrdinalEncoder()
         else:
             coder = LabelEncoder()
         coder.fit(data)
         return coder.transform(data)
 
-    def data_segregate(self, data, flag):
+    def data_segregate(self, data, tic_tac_toe):
         n_column = data.shape[1]
-        if flag:
+        if tic_tac_toe:
             return data[:, 0:n_column - 1], data[:, -1]
         else:
             return data.iloc[:, 0:n_column - 1], data.iloc[:, -1]
 
     # fit of model and take the score(accuracy in this one)
-    def model_score(self, x_train, y_train, x_test, y_test, flag):
-        if flag:
+    def model_score(
+            self, x_train, y_train,
+            x_test, y_test, tic_tac_toe
+    ):
+        if tic_tac_toe:
             model = CategoricalNB()
         else:
             model = GaussianNB()
@@ -37,7 +41,10 @@ class CategoricalNBLearn:
         return model.score(x_test, y_test)
 
     # plot learned score
-    def plot(self, x_data, y_data, x_label, y_label, title):
+    def plot(
+            self, x_data, y_data,
+            x_label, y_label, title
+    ):
         plt.plot(x_data, y_data)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
@@ -45,34 +52,57 @@ class CategoricalNBLearn:
         plt.grid(True)
         plt.show()
 
-    def run(self, data, title, flag):  # run algorithm
-        if flag:
-            data = self.encoder(data, flag)
-            x, y = self.data_segregate(data, flag)
+    def run(
+            self, data,
+            title, tic_tac_toe
+    ):
+        if tic_tac_toe:
+            data = self.encoder(data, tic_tac_toe)
+            x, y = self.data_segregate(data, tic_tac_toe)
         else:
-            x, y = self.data_segregate(data, flag)
-            y = self.encoder(y, flag)
+            x, y = self.data_segregate(data, tic_tac_toe)
+            y = self.encoder(y, tic_tac_toe)
 
         score_list = []
 
         # divide the data into test and train
         for size in self.train_size:
-            x_train, x_test, y_train, y_test = train_test_split(x, y,
-                                                                train_size=size,
-                                                                random_state=self.random_state,
-                                                                shuffle=True)
-            score = self.model_score(x_train, y_train, x_test, y_test, flag)
+            (x_train, x_test,
+             y_train, y_test) = train_test_split(
+                    x, y,
+                    train_size=size,
+                    random_state=self.random_state,
+                    shuffle=True
+            )
+            score = self.model_score(
+                    x_train, y_train,
+                    x_test, y_test,
+                    tic_tac_toe
+            )
             score_list.append(score)
 
-        self.plot(self.train_size, score_list,
-                  'Train size', 'Accuracy', title)
+        self.plot(
+                self.train_size, score_list,
+                'Train size', 'Accuracy', title
+        )
 
 
-# import data
-data_tic_tac_toe = read_csv('Tic_tac_toe.txt', sep=",", header=None)
+data_tic_tac_toe = read_csv(
+        'Tic_tac_toe.txt',
+        sep=",", header=None
+)
+CategoricalNBLearn().run(
+        data=data_tic_tac_toe,
+        title='Tic-tac-toe Naive Bayes classifier',
+        tic_tac_toe=True
+)
 
-# use NB for classification
-CategoricalNBLearn().run(data=data_tic_tac_toe, title='Tic-tac-toe Naive Bayes classifier', flag=True)
-
-data_spam = read_csv('spam.txt', sep=",", header=0)
-CategoricalNBLearn().run(data=data_spam, title='Spam Naive Bayes classifier', flag=False)
+data_spam = read_csv(
+        'spam.txt',
+        sep=",", header=0
+)
+CategoricalNBLearn().run(
+        data=data_spam,
+        title='Spam Naive Bayes classifier',
+        tic_tac_toe=False
+)

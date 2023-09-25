@@ -14,8 +14,12 @@ class TitanicGaussianNB:
         data['Age'] = data['Age'].fillna(mid_age)
         data['Relatives'] = data['SibSp'] + data['Parch']
 
-        data = data.drop(columns=['PassengerId', 'Name', 'Ticket', 'Fare',
-                                  'Cabin', 'Embarked', 'SibSp', 'Parch'])
+        data = data.drop(
+                columns=[
+                    'PassengerId', 'Name', 'Ticket', 'Fare',
+                    'Cabin', 'Embarked', 'SibSp', 'Parch'
+                ]
+        )
         return data
 
     def encoder(data):  # create labels for categorical data
@@ -34,21 +38,25 @@ class TitanicGaussianNB:
         return model.predict(x_test)
 
 
+NB = TitanicGaussianNB
 # preparing data (train & test)
-train_data = TitanicGaussianNB.data_preparing(file_name='train.csv')
-train_data['Sex'] = TitanicGaussianNB.encoder(data=train_data['Sex'])
-x_train, y_train = TitanicGaussianNB.data_separate(data=train_data)
+train_data = NB.data_preparing(file_name='train.csv')
+train_data['Sex'] = NB.encoder(data=train_data['Sex'])
+x_train, y_train = NB.data_separate(data=train_data)
 
-test_data = TitanicGaussianNB.data_preparing(file_name='test.csv')
-test_data['Sex'] = TitanicGaussianNB.encoder(data=test_data['Sex'])
+test_data = NB.data_preparing(file_name='test.csv')
+test_data['Sex'] = NB.encoder(data=test_data['Sex'])
 x_test = test_data
 
 # use model for prediction
-result = TitanicGaussianNB.model_predict(x_train, y_train, x_test)
+result = NB.model_predict(x_train, y_train, x_test)
 test_data['Survived predict'] = result
 
 # we guess, that all woman survived and all man died
-submission_data = read_csv('gender_submission.csv', sep=",", header=0)
+submission_data = read_csv(
+        'gender_submission.csv',
+        sep=",", header=0
+)
 test_data['Survived true'] = submission_data['Survived']
 
 cnt = 0
@@ -59,5 +67,6 @@ for index, row in test_data.iterrows():
 # compute accuracy
 n_row = test_data.shape[0]
 accuracy = cnt / n_row
+
 print(cnt, n_row)
 print('accuracy:', accuracy)
