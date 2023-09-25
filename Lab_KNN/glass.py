@@ -88,8 +88,9 @@ class Kernels:
 data_glass = read_csv('glass.xls', sep=',', header=0)
 
 print(data_glass.keys())
+
 (x_train, x_test,
- y_train, y_test) = split_data(data_glass, train_size=0.8)
+ y_train, y_test) = split_data(data_glass, train_size=0.6)
 
 # number of neighbours from 1 to 13 without multiple of 7
 neighbors_list = [
