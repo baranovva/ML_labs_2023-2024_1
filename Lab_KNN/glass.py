@@ -48,7 +48,7 @@ def plot(x_data, y_data, kernel_name):
 
 
 class Kernels:
-    # from https://en.wikipedia.org/wiki/Kernel_(statistics)
+    # kernels from https://en.wikipedia.org/wiki/Kernel_(statistics)
     def rectangular(self, distance):
         return 0.5
 
@@ -56,19 +56,19 @@ class Kernels:
         return 1 - abs(distance)
 
     def epanechnikov(self, distance):
-        return 0.75 * (1 - distance ** 2)
+        return 0.75 * (1 - distance * distance)
 
     def biweight(self, distance):
-        return (15 / 16) * (1 - distance ** 2) ** 2
+        return (15 / 16) * (1 - distance * distance) ** 2
 
     def triweight(self, distance):
-        return (35 / 32) * (1 - distance ** 2) ** 3
+        return (35 / 32) * (1 - distance * distance) ** 3
 
     def tricube(self, distance):
         return (70 / 81) * (1 - abs(distance) ** 3) ** 3
 
     def gaussian(self, distance):
-        return (1 / sqrt(pi)) * exp(-0.5 * (distance ** 2))
+        return (1 / sqrt(pi)) * exp(-0.5 * (distance * distance))
 
     def cosine(self, distance):
         return (pi / 4) * cos(pi * distance / 2)
