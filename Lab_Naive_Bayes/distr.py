@@ -12,7 +12,7 @@ np.random.seed(2023)
 def data_generator(
         n_point, mean,
         covariance, class_name
-):
+) -> object:
     covar = np.array([[covariance, 0], [0, covariance]])
     x_data = np.random.multivariate_normal(
             mean, covar, n_point
@@ -30,7 +30,7 @@ class GaussianNBLearn:
     def model_score(
             self, x_train, y_train,
             x_test, y_test
-    ):
+    ) -> object:
         model = GaussianNB()
         model.fit(x_train, y_train)
         return model.score(x_test, y_test)
@@ -39,7 +39,7 @@ class GaussianNBLearn:
     def plot(
             self, x_data, y_data,
             x_label, y_label, title
-    ):
+    ) -> None:
         plt.plot(x_data, y_data)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
