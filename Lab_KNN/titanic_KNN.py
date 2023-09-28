@@ -36,7 +36,7 @@ class TitanicKNN:
     # fit model and take predict
     def model_predict(
             x_train, y_train,
-            x_test,
+            x_test, y_test,
             n_neighbors: int
     ) -> object:
         model = KNeighborsClassifier(
@@ -45,7 +45,7 @@ class TitanicKNN:
         )
         model.fit(x_train, y_train)
 
-        return model.predict(x_test)
+        return model.score(x_test, y_test)
 
     def grid_search(x_train, y_train) -> object:
         model = KNeighborsClassifier(weights='distance')
@@ -70,30 +70,16 @@ x_test = test_data
 
 best_parameters = KNN.grid_search(x_train, y_train)
 
-# use model for prediction
-result = KNN.model_predict(
-        x_train, y_train,
-        x_test,
-        n_neighbors=best_parameters['n_neighbors']
-)
-test_data['Survived predict'] = result
-
-# we guess, that all woman survived and all man died
 submission_data = read_csv(
         'gender_submission.csv',
         sep=",", header=0
 )
+y_test = submission_data['Survived']
 
-test_data['Survived true'] = submission_data['Survived']
-
-cnt = 0
-for index, row in test_data.iterrows():
-    if row['Survived predict'] == row['Survived true']:
-        cnt += 1
-
-# compute accuracy
-n_row = test_data.shape[0]
-accuracy = cnt / n_row
-
-print(cnt, n_row)
-print('accuracy:', accuracy)
+# use model for prediction
+score = KNN.model_predict(
+        x_train, y_train,
+        x_test, y_test,
+        n_neighbors=best_parameters['n_neighbors']
+)
+print(score)
