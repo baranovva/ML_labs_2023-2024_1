@@ -7,7 +7,8 @@ seed(2023)
 
 
 class TitanicGaussianNB:
-    def data_preparing(file_name):  # filling missing data and del some data classes
+    # filling missing data and del some data classes
+    def data_preparing(file_name):
         data = read_csv(file_name)
 
         mid_age = data['Age'].median()
@@ -22,20 +23,26 @@ class TitanicGaussianNB:
         )
         return data
 
-    def encoder(data):  # create labels for categorical data
+    # create labels for categorical data
+    def encoder(data):
         coder = LabelEncoder()
         coder.fit_transform(data)
         return coder.transform(data)
 
-    def data_separate(data):  # separate data as input and output
+    # separate data as input and output
+    def data_separate(data):
         x = data[['Pclass', 'Sex', 'Age', 'Relatives']]
         y = data['Survived']
         return x, y
 
-    def model_predict(x_train, y_train, x_test):  # fit model and take predict
+    # fit model and take predict
+    def model_predict(
+            x_train, y_train,
+            x_test, y_test
+    ):
         model = GaussianNB()
         model.fit(x_train, y_train)
-        return model.predict(x_test)
+        return model.score(x_test, y_test)
 
 
 NB = TitanicGaussianNB
@@ -48,25 +55,15 @@ test_data = NB.data_preparing(file_name='test.csv')
 test_data['Sex'] = NB.encoder(data=test_data['Sex'])
 x_test = test_data
 
-# use model for prediction
-result = NB.model_predict(x_train, y_train, x_test)
-test_data['Survived predict'] = result
-
-# we guess, that all woman survived and all man died
 submission_data = read_csv(
         'gender_submission.csv',
         sep=",", header=0
 )
-test_data['Survived true'] = submission_data['Survived']
+y_test = submission_data['Survived']
 
-cnt = 0
-for index, row in test_data.iterrows():
-    if row['Survived predict'] == row['Survived true']:
-        cnt += 1
-
-# compute accuracy
-n_row = test_data.shape[0]
-accuracy = cnt / n_row
-
-print(cnt, n_row)
-print('accuracy:', accuracy)
+# use model for prediction
+score = NB.model_predict(
+        x_train, y_train,
+        x_test, y_test
+)
+print(score)
