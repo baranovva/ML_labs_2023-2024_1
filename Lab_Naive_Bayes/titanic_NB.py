@@ -8,7 +8,7 @@ seed(2023)
 
 class TitanicGaussianNB:
     # filling missing data and del some data classes
-    def data_preparing(file_name):
+    def data_preparing(file_name) -> object:
         data = read_csv(file_name)
 
         mid_age = data['Age'].median()
@@ -24,13 +24,13 @@ class TitanicGaussianNB:
         return data
 
     # create labels for categorical data
-    def encoder(data):
+    def encoder(data) -> object:
         coder = LabelEncoder()
         coder.fit_transform(data)
         return coder.transform(data)
 
     # separate data as input and output
-    def data_separate(data):
+    def data_separate(data) -> object:
         x = data[['Pclass', 'Sex', 'Age', 'Relatives']]
         y = data['Survived']
         return x, y
@@ -39,7 +39,7 @@ class TitanicGaussianNB:
     def model_predict(
             x_train, y_train,
             x_test, y_test
-    ):
+    ) -> float:
         model = GaussianNB()
         model.fit(x_train, y_train)
         return model.score(x_test, y_test)

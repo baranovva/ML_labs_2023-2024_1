@@ -73,9 +73,9 @@ plot_data(data_train)
 y_test = encoder(y_test)
 y_train = encoder(y_train)
 
-n_neighbors_list = range(1, 52, 2)
+n_neighbors_set = range(1, 52, 2)
 score_list = []
-for n_neighbors in n_neighbors_list:
+for n_neighbors in n_neighbors_set:
     score = training(
             x_train=x_train,
             y_train=y_train,
@@ -85,5 +85,5 @@ for n_neighbors in n_neighbors_list:
     )
     score_list.append(score)
 
-plot_score(x_data=n_neighbors_list, y_data=score_list)
+plot_score(x_data=n_neighbors_set, y_data=score_list)
 print(f'max accuracy {max(score_list)}')

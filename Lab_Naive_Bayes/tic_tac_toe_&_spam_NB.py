@@ -13,7 +13,7 @@ class CategoricalNBLearn:
         self.train_size = arange(0.01, 1., 0.001)
 
     # create labels for categorical data
-    def encoder(self, data, tic_tac_toe):
+    def encoder(self, data, tic_tac_toe) -> object:
         if tic_tac_toe:
             coder = OrdinalEncoder()
         else:
@@ -21,7 +21,7 @@ class CategoricalNBLearn:
         coder.fit(data)
         return coder.transform(data)
 
-    def data_segregate(self, data, tic_tac_toe):
+    def data_segregate(self, data, tic_tac_toe) -> object:
         n_column = data.shape[1]
         if tic_tac_toe:
             return data[:, 0:n_column - 1], data[:, -1]
@@ -32,7 +32,7 @@ class CategoricalNBLearn:
     def model_score(
             self, x_train, y_train,
             x_test, y_test, tic_tac_toe
-    ):
+    ) -> float:
         if tic_tac_toe:
             model = CategoricalNB()
         else:
@@ -44,7 +44,7 @@ class CategoricalNBLearn:
     def plot(
             self, x_data, y_data,
             x_label, y_label, title
-    ):
+    ) -> None:
         plt.plot(x_data, y_data)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
@@ -53,9 +53,9 @@ class CategoricalNBLearn:
         plt.show()
 
     def run(
-            self, data,
-            title, tic_tac_toe
-    ):
+            self, data: object,
+            title: str, tic_tac_toe: bool
+    ) -> None:
         if tic_tac_toe:
             data = self.encoder(data, tic_tac_toe)
             x, y = self.data_segregate(data, tic_tac_toe)

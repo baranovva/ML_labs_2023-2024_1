@@ -48,7 +48,7 @@ class GaussianNBLearn:
         plt.show()
 
     # run algorithm
-    def run(self, x_data, y_data, title):
+    def run(self, x_data, y_data, title: str):
         score_list = []
 
         # divide the data into test and train

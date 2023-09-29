@@ -8,7 +8,7 @@ seed(2023)
 
 
 class TitanicKNN:
-    def data_preparing(file_name):  # filling missing data and del some data classes
+    def data_preparing(file_name) -> object:  # filling missing data and del some data classes
         data = read_csv(file_name)
 
         mid_age = data['Age'].median()
@@ -22,13 +22,13 @@ class TitanicKNN:
         )
         return data
 
-    def encoder(data):  # create labels for categorical data
+    def encoder(data) -> object:  # create labels for categorical data
         coder = LabelEncoder()
         coder.fit_transform(data)
         return coder.transform(data)
 
     # separate data as input and output
-    def data_separate(data):
+    def data_separate(data) -> object:
         x = data[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch']]
         y = data['Survived']
         return x, y

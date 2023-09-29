@@ -16,7 +16,7 @@ class KNNLearn:
     def encoder(
             self, data,
             tic_tac_toe
-    ):
+    ) -> object:
         if tic_tac_toe:
             coder = OrdinalEncoder()
         else:
@@ -26,8 +26,8 @@ class KNNLearn:
 
     def data_segregate(
             self, data,
-            tic_tac_toe
-    ):
+            tic_tac_toe: bool
+    ) -> object:
         n_column = data.shape[1]
         if tic_tac_toe:
             return data[:, 0:n_column - 1], data[:, -1]
@@ -59,8 +59,8 @@ class KNNLearn:
     # plot learned score
     def plot(
             self, x_data, y_data,
-            x_label, y_label, title
-    ):
+            x_label, y_label, title: str
+    ) -> None:
         plt.plot(x_data, y_data)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
@@ -70,8 +70,8 @@ class KNNLearn:
 
     def run(
             self, data,
-            title, tic_tac_toe
-    ):
+            title, tic_tac_toe: bool
+    ) -> None:
         if tic_tac_toe:
             data = self.encoder(data, tic_tac_toe)
             x, y = self.data_segregate(data, tic_tac_toe)
