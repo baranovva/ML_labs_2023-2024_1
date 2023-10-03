@@ -74,7 +74,7 @@ score = training(
         model_name='C-Support',  # C/Epsilon
         kernel_name='linear',
         C_for_C_support=1,
-        epsilon_for_E_support=None,
+        epsilon_for_E_support=1,
         gamma=1
 )
 
