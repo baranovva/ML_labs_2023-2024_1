@@ -119,7 +119,7 @@ score_train, score_test, model, n_support_vectors = training(
         C_for_C_support=1,
         epsilon_for_E_support=None,
         gamma='scale',  # default
-        degree=3  # default
+        degree=None
 )
 
 print(score_test, n_support_vectors)
@@ -145,16 +145,18 @@ def grid_search_task_2(
         x_train: object,
         y_train: object,
         kernel_name: str,
-        gamma: object
+        gamma: object,
+        degree: int
 ) -> object:
     model = SVC(
             kernel=kernel_name,
-            gamma=gamma
+            gamma=gamma,
+            degree=degree
     )
 
     parameters = {'C': np.arange(0.01, 10, 0.01)}
 
-    grid_search = GridSearchCV(model, parameters, n_jobs=8)
+    grid_search = GridSearchCV(model, param_grid=parameters, n_jobs=8)
     grid_search.fit(x_train, y_train)
 
     print("The best:", grid_search.best_params_)
@@ -184,7 +186,8 @@ best_parameters = grid_search_task_2(
         x_train=x_train,
         y_train=y_train,
         kernel_name='linear',
-        gamma=3  # default
+        gamma=None,
+        degree=None
 )
 
 score_train, score_test, model, n_support_vectors = training(
@@ -197,7 +200,7 @@ score_train, score_test, model, n_support_vectors = training(
         C_for_C_support=best_parameters['C'],
         epsilon_for_E_support=None,
         gamma='scale',  # default
-        degree=3  # default
+        degree=None
 )
 
 print(score_train, score_test)
@@ -225,6 +228,7 @@ del (data_train, data_test, x_train, y_train, x_test, y_test, best_parameters,
      score_train, score_test, model, n_support_vectors)
 '''
 
+
 # task 3
 
 def data_split_task_3(
@@ -247,6 +251,29 @@ def data_split_task_3(
 
     return x_train, x_test, y_train, y_test
 
+
+def line_plot(
+        x_data: object,
+        y_data: object,
+        x_label: str,
+        y_label: str,
+        title: str
+) -> None:
+    plt.plot(x_data, y_data)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.grid(True)
+    plt.show()
+
+
+def bar_plot(x_data, y_data):
+    plt.bar(x_data, y_data)
+    plt.ylabel('accuracy for test')
+    plt.title('SVM task 3 all kernels')
+    plt.show()
+
+
 data = read_csv(
         filepath_or_buffer='svmdata3.txt',
         header=0,
@@ -260,8 +287,78 @@ data = read_csv(
         random_state=2023
 )
 
+y_test = encoder(y_test)
+y_train = encoder(y_train)
+
 kernel_list = [
-    "polynomial",
-    "radial",
+    "linear",
+    "poly",
+    "rbf",
     "sigmoid"
 ]
+score_test_list = []
+
+for kernel in kernel_list:
+    if kernel != "poly":
+        best_parameters = grid_search_task_2(
+                x_train=x_train,
+                y_train=y_train,
+                kernel_name=kernel,
+                gamma='scale',  # default
+                degree=3  # default
+        )
+
+        score_train, score_test, model, n_support_vectors = training(
+                x_train=x_train,
+                x_test=x_test,
+                y_train=y_train,
+                y_test=y_test,
+                model_name='C-Support',  # C/Epsilon
+                kernel_name=kernel,
+                C_for_C_support=best_parameters['C'],
+                epsilon_for_E_support=None,
+                gamma='scale',  # default
+                degree=3  # default
+        )
+        score_test_list.append(score_test)
+
+    else:
+        poly_degree_list = np.arange(1, 11, 1)
+        score_test_list_poly = []
+
+        for degree in poly_degree_list:
+            best_parameters = grid_search_task_2(
+                    x_train=x_train,
+                    y_train=y_train,
+                    kernel_name=kernel,
+                    gamma='scale',  # default
+                    degree=degree
+            )
+
+            score_train, score_test, model, n_support_vectors = training(
+                    x_train=x_train,
+                    x_test=x_test,
+                    y_train=y_train,
+                    y_test=y_test,
+                    model_name='C-Support',  # C/Epsilon
+                    kernel_name=kernel,
+                    C_for_C_support=best_parameters['C'],
+                    epsilon_for_E_support=None,
+                    gamma='scale',  # default
+                    degree=degree
+            )
+            score_test_list_poly.append(score_test)
+
+        score_test_list.append(max(score_test_list_poly))
+
+print(score_test_list)
+
+line_plot(
+        x_data=poly_degree_list,
+        y_data=score_test_list_poly,
+        x_label='poly degree',
+        y_label='accuracy for test',
+        title='SVM task 3 poly kernel'
+)
+
+bar_plot(kernel_list, score_test_list)
