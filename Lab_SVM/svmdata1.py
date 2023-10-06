@@ -228,9 +228,8 @@ del (data_train, data_test, x_train, y_train, x_test, y_test, best_parameters,
      score_train, score_test, model, n_support_vectors)
 '''
 
-
 # task 3
-
+'''
 def data_split_task_3(
         data: object,
         train_size: float,
@@ -362,3 +361,67 @@ line_plot(
 )
 
 bar_plot(kernel_list, score_test_list)
+'''
+
+
+# task 4
+
+'''
+def grid_search_task_4(
+        x_data: object,
+        y_data: object,
+) -> object:
+    model = SVC()
+
+    parameters = {
+        'C': np.arange(1, 10, 1),
+        'kernel': ("linear", "poly", "rbf", "sigmoid"),
+        'degree': np.arange(1, 5, 1),
+        'gamma': ('scale', 'auto')
+    }
+
+    grid_search = GridSearchCV(model, param_grid=parameters, n_jobs=-1)
+    grid_search.fit(x_data, y_data)
+
+    print("The best:", grid_search.best_params_)
+    return grid_search.best_params_
+
+
+data_train = read_csv(
+        filepath_or_buffer='svmdata4.txt',
+        header=0,
+        sep='	'
+)
+
+data_test = read_csv(
+        filepath_or_buffer='svmdata4test.txt',
+        header=0,
+        sep='	'
+)
+
+(x_train, y_train,
+ x_test, y_test) = data_split(data_train, data_test)
+
+y_test = encoder(y_test)
+y_train = encoder(y_train)
+
+best_parameters = grid_search_task_4(x_train, y_train)
+
+score_train, score_test, model, n_support_vectors = training(
+        x_train=x_train,
+        x_test=x_test,
+        y_train=y_train,
+        y_test=y_test,
+        model_name='C-Support',  # C/Epsilon
+        kernel_name=best_parameters['kernel'],
+        C_for_C_support=best_parameters['C'],
+        epsilon_for_E_support=None,
+        gamma=best_parameters['gamma'],
+        degree=best_parameters['degree']
+)
+
+print(score_train, score_test)
+'''
+
+# task 5
+
