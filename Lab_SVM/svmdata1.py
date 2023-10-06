@@ -159,7 +159,7 @@ def grid_search_task_2(
     grid_search = GridSearchCV(model, param_grid=parameters, n_jobs=8)
     grid_search.fit(x_train, y_train)
 
-    print("The best:", grid_search.best_params_)
+    print("The best:", grid_search.best_params_, 'with score:', grid_search.best_score_)
     return grid_search.best_params_
 
 
@@ -190,7 +190,7 @@ best_parameters = grid_search_task_2(
         degree=None
 )
 
-score_train, score_test, model, n_support_vectors = training(
+score_train, score_test, model, __ = training(
         x_train=x_train,
         x_test=x_test,
         y_train=y_train,
@@ -223,13 +223,11 @@ visualisation(
         task_name='task 2 test data',
         colors='red,green'
 )
-
-del (data_train, data_test, x_train, y_train, x_test, y_test, best_parameters,
-     score_train, score_test, model, n_support_vectors)
 '''
+
 
 # task 3
-'''
+
 def data_split_task_3(
         data: object,
         train_size: float,
@@ -273,6 +271,7 @@ def bar_plot(x_data, y_data):
     plt.show()
 
 
+'''
 data = read_csv(
         filepath_or_buffer='svmdata3.txt',
         header=0,
@@ -307,7 +306,7 @@ for kernel in kernel_list:
                 degree=3  # default
         )
 
-        score_train, score_test, model, n_support_vectors = training(
+        __, score_test, __, __ = training(
                 x_train=x_train,
                 x_test=x_test,
                 y_train=y_train,
@@ -334,7 +333,7 @@ for kernel in kernel_list:
                     degree=degree
             )
 
-            score_train, score_test, model, n_support_vectors = training(
+            score_train, score_test, model, __ = training(
                     x_train=x_train,
                     x_test=x_test,
                     y_train=y_train,
@@ -366,16 +365,13 @@ bar_plot(kernel_list, score_test_list)
 
 # task 4
 
-'''
-def grid_search_task_4(
-        x_data: object,
-        y_data: object,
-) -> object:
+
+def grid_search_task_4(x_data: object, y_data: object) -> object:
     model = SVC()
 
     parameters = {
         'C': np.arange(1, 10, 1),
-        'kernel': ("linear", "poly", "rbf", "sigmoid"),
+        'kernel': ("poly", "rbf", "sigmoid"),
         'degree': np.arange(1, 5, 1),
         'gamma': ('scale', 'auto')
     }
@@ -383,10 +379,11 @@ def grid_search_task_4(
     grid_search = GridSearchCV(model, param_grid=parameters, n_jobs=-1)
     grid_search.fit(x_data, y_data)
 
-    print("The best:", grid_search.best_params_)
+    print("The best:", grid_search.best_params_, 'with score:', grid_search.best_score_)
     return grid_search.best_params_
 
 
+'''
 data_train = read_csv(
         filepath_or_buffer='svmdata4.txt',
         header=0,
@@ -407,7 +404,7 @@ y_train = encoder(y_train)
 
 best_parameters = grid_search_task_4(x_train, y_train)
 
-score_train, score_test, model, n_support_vectors = training(
+score_train, score_test, model, __ = training(
         x_train=x_train,
         x_test=x_test,
         y_train=y_train,
@@ -423,5 +420,106 @@ score_train, score_test, model, n_support_vectors = training(
 print(score_train, score_test)
 '''
 
+
 # task 5
 
+def grid_search_task_5(x_data: object, y_data: object) -> object:
+    model = SVC()
+
+    parameters = {
+        'C': np.arange(-5, 6, 1),
+        'kernel': ("poly", "rbf", "sigmoid"),
+        'degree': np.arange(1, 5, 1),
+        'gamma': np.arange(0, 15, 1)
+    }
+
+    grid_search = GridSearchCV(model, param_grid=parameters, n_jobs=-1)
+    grid_search.fit(x_data, y_data)
+
+    print("The best:", grid_search.best_params_, 'with score:', grid_search.best_score_)
+    return grid_search.best_params_
+
+
+'''
+data_train = read_csv(
+        filepath_or_buffer='svmdata5.txt',
+        header=0,
+        sep='	'
+)
+
+data_test = read_csv(
+        filepath_or_buffer='svmdata5test.txt',
+        header=0,
+        sep='	'
+)
+
+(x_train, y_train,
+ x_test, y_test) = data_split(data_train, data_test)
+
+y_test = encoder(y_test)
+y_train = encoder(y_train)
+
+best_parameters = grid_search_task_5(x_train, y_train)
+
+score_train, score_test, model, n_support_vectors = training(
+        x_train=x_train,
+        x_test=x_test,
+        y_train=y_train,
+        y_test=y_test,
+        model_name='C-Support',  # C/Epsilon
+        kernel_name=best_parameters['kernel'],
+        C_for_C_support=best_parameters['C'],
+        epsilon_for_E_support=None,
+        gamma=best_parameters['gamma'],
+        degree=best_parameters['degree']
+)
+
+print(score_train, score_test)
+
+x_test = x_test.to_numpy()
+visualisation(
+        x_data=x_test,
+        y_data=y_test,
+        x_test=None,
+        model=model,
+        task_name='task 5',
+        colors='red,green'
+)
+
+# hyperparametr with overfitting
+gamma = 50
+
+score_train, score_test, model, __ = training(
+        x_train=x_train,
+        x_test=x_test,
+        y_train=y_train,
+        y_test=y_test,
+        model_name='C-Support',  # C/Epsilon
+        kernel_name='poly',
+        C_for_C_support=1,
+        epsilon_for_E_support=None,
+        gamma=gamma,
+        degree=2
+)
+
+print(score_train, score_test)
+
+visualisation(
+        x_data=x_train.to_numpy(),
+        y_data=y_train,
+        x_test=None,
+        model=model,
+        task_name='task 4 train',
+        colors='red,green'
+)
+
+visualisation(
+        x_data=x_test.to_numpy(),
+        y_data=y_test,
+        x_test=None,
+        model=model,
+        task_name='task 4 test',
+        colors='red,green'
+)
+'''
+# task 6
