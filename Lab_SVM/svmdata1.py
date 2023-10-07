@@ -1,14 +1,7 @@
-from pandas import read_csv
-from functions_svm import data_split, training, encoder, visualisation
+from functions_svm import data_split, training, encoder, visualisation, reader
 
-data_train = read_csv(
-        'svmdata1.txt',
-        sep="	", header=0
-)
-data_test = read_csv(
-        'svmdata1test.txt',
-        sep="	", header=0
-)
+data_train = reader(file_name='svmdata1.txt')
+data_test = reader(file_name='svmdata1test.txt')
 
 (x_train, y_train,
  x_test, y_test) = data_split(data_train, data_test)
@@ -16,19 +9,15 @@ data_test = read_csv(
 y_test = encoder(y_test)
 y_train = encoder(y_train)
 
-score_train, score_test, model, n_support_vectors = training(
+__, score_test, model = training(
         x_train=x_train,
         x_test=x_test,
         y_train=y_train,
         y_test=y_test,
-        model_name='C-Support',  # C/Epsilon
-        kernel_name='linear',
-        C_for_C_support=1,
-        epsilon_for_E_support=None,
-        gamma='scale',  # default
-        degree=3  # default
+        kernel_name='linear'
 )
 
+n_support_vectors = len(model.support_vectors_)
 print(score_test, n_support_vectors)
 
 visualisation(
@@ -36,6 +25,5 @@ visualisation(
         y_data=y_test,
         x_test=x_train.to_numpy(),
         model=model,
-        task_name='task 1',
-        colors='green,red'
+        task_name='1',
 )
