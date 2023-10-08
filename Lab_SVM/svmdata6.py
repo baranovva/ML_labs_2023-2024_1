@@ -11,11 +11,8 @@ data = reader(file_name='svmdata6.txt')
         train_size=0.5
 )
 
-y_test = encoder(y_test)
-y_train = encoder(y_train)
-
 score_test_list = []
-epsilon_list = np.arange(0, 2, 0.01)
+epsilon_list = np.arange(0, 1.2, 0.01)
 
 for epsilon in epsilon_list:
     __, __, model = training(
