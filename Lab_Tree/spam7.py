@@ -21,9 +21,9 @@ def split_data(data, train_size=0.9, random_state=2023) -> object:
     return x_train, x_test, y_train, y_test
 
 
-data_glass = read_csv(filepath_or_buffer='Glass.csv', sep=',', header=0)
+data = read_csv(filepath_or_buffer='spam7.csv', sep=',', header=0)
 
-x_train, x_test, y_train, y_test = split_data(data_glass)
+x_train, x_test, y_train, y_test = split_data(data)
 
 random_state = 2023
 tree = DecisionTreeClassifier(random_state=random_state).fit(x_train, y_train)
@@ -35,9 +35,9 @@ plt.show()
 
 param_grid = {
     'criterion': ('gini', 'entropy', 'log_loss'),
-    'max_depth': np.arange(2, 6),
-    'min_samples_split': np.arange(2, 7),
-    'min_samples_leaf': np.arange(1, 6)
+    'max_depth': np.arange(2, 8),
+    'min_samples_split': np.arange(2, 8),
+    'min_samples_leaf': np.arange(1, 9)
 }
 search = GridSearchCV(tree, param_grid=param_grid, n_jobs=-8).fit(x_train, y_train)
 best_parameters = search.best_params_

@@ -1,7 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
-
-from pandas import read_csv
+from matplotlib import pyplot as plt
+from pandas import read_csv, DataFrame
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.model_selection import GridSearchCV
@@ -25,21 +24,17 @@ data_glass = read_csv(filepath_or_buffer='Glass.csv', sep=',', header=0)
 
 x_train, x_test, y_train, y_test = split_data(data_glass)
 
-random_state = 2023
-tree = DecisionTreeClassifier(random_state=random_state).fit(x_train, y_train)
-print(tree.score(x_train, y_train), tree.score(x_test, y_test))
-
-plt.figure(figsize=(10, 10))
-plot_tree(tree, filled=True, fontsize=5, rounded=True, impurity=False)
-plt.show()
-
 param_grid = {
     'criterion': ('gini', 'entropy', 'log_loss'),
     'max_depth': np.arange(2, 6),
     'min_samples_split': np.arange(2, 7),
     'min_samples_leaf': np.arange(1, 6)
 }
-search = GridSearchCV(tree, param_grid=param_grid, n_jobs=-8).fit(x_train, y_train)
+
+random_state = 2023
+tree = DecisionTreeClassifier(random_state=random_state)
+
+search = GridSearchCV(tree, param_grid=param_grid, n_jobs=-1).fit(x_train, y_train)
 best_parameters = search.best_params_
 print("The best:", best_parameters, 'with score:', search.best_score_)
 
@@ -52,6 +47,18 @@ tree_my = DecisionTreeClassifier(
 ).fit(x_train, y_train)
 
 print(tree_my.score(x_train, y_train), tree_my.score(x_test, y_test))
+
+sample_glass = DataFrame(data={'RI': [1.515],
+                               'Na': [11.7],
+                               'Mg': [1.01],
+                               'Al': [1.19],
+                               'Si': [72.59],
+                               'K': [0.43],
+                               'Ca': [11.44],
+                               'Ba': [0.02],
+                               'Fe': [0.1]})
+
+print(*tree_my.predict(sample_glass))
 
 plt.figure(figsize=(10, 10))
 plot_tree(tree_my, filled=True, fontsize=5, rounded=True, impurity=False)
