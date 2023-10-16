@@ -24,20 +24,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Lab_Claster\votes_repub_copy.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\Lab_Claster\votes_repub_with_st.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Lab_KNN\gender_submission.csv">
           <value>
             <Attribute>
