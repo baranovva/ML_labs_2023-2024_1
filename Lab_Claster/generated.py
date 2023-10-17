@@ -7,6 +7,7 @@ from sklearn.metrics import davies_bouldin_score, silhouette_score
 
 random_state = 2023
 
+
 data, labels = make_blobs(n_samples=1200, centers=3, cluster_std=[[4, 2], [2, 7], [5, 1]], random_state=random_state)
 
 plt.scatter(data[:, 0], data[:, 1], c=labels)
