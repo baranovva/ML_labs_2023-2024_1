@@ -16,3 +16,4 @@ for col_names in columns:
 lin_reg = LinearRegression(n_jobs=-1).fit(data_x, data_y)
 print(*data_x.columns)
 print(lin_reg.score(data_x, data_y))
+
