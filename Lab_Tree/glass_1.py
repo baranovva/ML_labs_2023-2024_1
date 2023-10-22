@@ -21,7 +21,7 @@ def split_data(data, train_size=0.9, random_state=2023) -> object:
     return x_train, x_test, y_train, y_test
 
 
-data_glass = read_csv(filepath_or_buffer='Glass.csv', sep=',', header=0)
+data_glass = read_csv(filepath_or_buffer='../Lab_Tree/Glass.csv', sep=',', header=0)
 
 x_train, x_test, y_train, y_test = split_data(data_glass)
 
