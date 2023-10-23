@@ -26,7 +26,7 @@ for name in ('vehicle', 'Glass'):
 
     knn = KNeighborsClassifier()
     model = BaggingClassifier(random_state=2023, n_estimators=50, estimator=knn).fit(x_train, y_train)
-    print('Ada:', model.score(x_test, y_test))
+    print('Comp:', model.score(x_test, y_test))
 
     knn.fit(x_train, y_train)
     print('Knn:', knn.score(x_test, y_test))
