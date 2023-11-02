@@ -40,7 +40,7 @@ class AdaBoost:
 
             err = np.sum(sample_weights * (y != y_pred)) / np.sum(sample_weights)
 
-            alpha = 0.5 * np.log((1 - err) / max(err, 1e-10))
+            alpha = 0.5 * np.log((1 - err) / max(err, 1e-10)) + np.log(2)
             self.alphas.append(alpha)
             if err >= 0.5:
                 break
